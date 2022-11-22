@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const housingSchema = new Schema(
   {
     city: {
@@ -9,7 +8,7 @@ const housingSchema = new Schema(
     },
     typeOfRoom: {
       type: String,
-      required: [true, "This is required."],
+      required: [true, "Type of room is required."],
     },
     placesAvailable: {
       type: Number,
