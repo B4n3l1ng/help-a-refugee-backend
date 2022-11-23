@@ -17,6 +17,10 @@ const housingSchema = new Schema(
     image: {
       type: String,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "Host",
+    },
   }
   //   {
   //     // this second object adds extra properties: `createdAt` and `updatedAt`

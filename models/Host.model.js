@@ -23,6 +23,9 @@ const HostSchema = new Schema(
     city: {
       type: String,
     },
+    country: {
+      type: String,
+    },
     image: {
       type: String,
     },

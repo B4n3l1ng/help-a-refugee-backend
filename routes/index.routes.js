@@ -8,7 +8,6 @@ router.get("/", (req, res, next) => {
 router.get("/listings", async (req, res, next) => {
   try {
     const listings = await Housing.find();
-    console.log("hello", listings);
     res.json(listings);
   } catch (error) {
     console.log(error);
