@@ -1,9 +1,9 @@
 const { hashSync, genSaltSync, compareSync } = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { off } = require("../app");
 const router = require("express").Router();
 const Host = require("../models/Host.model");
 const Housing = require("../models/Housing.model");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 
 router.post("/signup", async (req, res) => {
   try {
@@ -20,8 +20,13 @@ router.post("/signup", async (req, res) => {
     console.log(error);
   }
 });
+
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  if (email === "" || password === "") {
+    res.status(400).json({ message: "Provide both email and password." });
+    return;
+  }
   const currentHost = await Host.find({ email });
   if (currentHost) {
     if (compareSync(password, currentHost.hashedPassword)) {
@@ -46,21 +51,34 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/listings", async (req, res, next) => {
+/*router.get("/listings", async (req, res, next) => {
   try {
-    const listings = await Housing.find({ owner: authToken._id });
+    const listings = await Housing.find({ owner: authToken.user._id });
 
     res.status(201).json(listings);
   } catch (error) {
     console.log(error);
   }
-});
+});*/
 
-router.post("/listings", async (req, res, next) => {
+/* router.post("/listings", async (req, res, next) => {
   try {
     const body = req.body;
-    const listing = await Housing.create({ ...body, owner: authToken._id });
+    const listing = await Housing.create({
+      ...body,
+      owner: authToken.user._id,
+    });
     res.status(201).json({ listing });
+  } catch (error) {
+    console.log(error);
+  }
+});*/
+
+router.get("/listings/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const listing = await Housing.findById(id);
+    res.json({ listing });
   } catch (error) {
     console.log(error);
   }
@@ -84,6 +102,15 @@ router.delete("/listings/:id", async (req, res, next) => {
     const { id } = req.params;
     const listing = await Housing.findByIdAndDelete(id);
     res.json(listing);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.get("/verify", isAuthenticated, (req, res, next) => {
+  try {
+    console.log(`req.payload`, req.payload);
+    res.status(200).json(req.payload);
   } catch (error) {
     console.log(error);
   }
