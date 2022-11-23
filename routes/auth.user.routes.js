@@ -1,5 +1,3 @@
-const { genSaltSync, hashSync } = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const { genSaltSync, hashSync } = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
