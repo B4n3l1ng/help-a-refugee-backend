@@ -1,8 +1,8 @@
-const { genSaltSync, hashSync } = require("bcrypt");
-const { Router } = require("express");
+const { genSaltSync, hashSync, compareSync } = require("bcryptjs");
+const router = require("express").Router();
 const User = require("../models/User.model");
 
-Router.post("/signup", async (req, res) => {
+router.post("/signup", async (req, res) => {
   try {
     const { email, password } = req.body;
     const salt = genSaltSync(10);
