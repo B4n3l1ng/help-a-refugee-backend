@@ -15,10 +15,14 @@ const app = express();
 require("./config")(app);
 
 // 👇 Start handling routes here
+const isAuthenticated = require("./middlewares/isAuthenticated");
+
 const indexRoutes = require("./routes/index.routes");
 app.use("/api", indexRoutes);
+
 const authHostRoutes = require("./routes/auth.host.routes");
 app.use("/host", authHostRoutes);
+
 const authUserRoutes = require("./routes/auth.user.routes");
 app.use("/user", authUserRoutes);
 
