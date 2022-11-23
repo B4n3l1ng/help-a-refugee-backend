@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 const { genSaltSync, hashSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
-=======
 const { genSaltSync, hashSync } = require("bcryptjs");
->>>>>>> 78f193057ab57d9e0227d6a37ba7e72bf227fe8b
+const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 const User = require("../models/User.model");
 
