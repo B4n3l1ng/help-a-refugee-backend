@@ -21,10 +21,10 @@ const indexRoutes = require("./routes/index.routes");
 app.use("/api", indexRoutes);
 
 const authHostRoutes = require("./routes/auth.host.routes");
-app.use("/host", isAuthenticated, authHostRoutes);
+app.use("/host", authHostRoutes);
 
 const authUserRoutes = require("./routes/auth.user.routes");
-app.use("/user", isAuthenticated, authUserRoutes);
+app.use("/user", authUserRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);

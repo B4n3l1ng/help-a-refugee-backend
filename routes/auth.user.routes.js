@@ -1,4 +1,4 @@
-const { genSaltSync, hashSync } = require("bcrypt");
+const { genSaltSync, hashSync } = require("bcryptjs");
 const router = require("express").Router();
 const User = require("../models/User.model");
 

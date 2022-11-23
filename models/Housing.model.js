@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const housingSchema = new Schema(
+const HousingSchema = new Schema(
   {
     city: {
       type: String,
@@ -28,6 +28,6 @@ const housingSchema = new Schema(
   //   }
 );
 
-const Housing = model("Housing", housingSchema);
+const Housing = model("Housing", HousingSchema);
 
 module.exports = Housing;

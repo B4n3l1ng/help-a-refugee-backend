@@ -59,9 +59,9 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-});*/
+});
 
-/* router.post("/listings", async (req, res, next) => {
+ router.post("/listings", async (req, res, next) => {
   try {
     const body = req.body;
     const listing = await Housing.create({
@@ -72,7 +72,7 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-});*/
+});
 
 router.get("/listings/:id", async (req, res, next) => {
   try {
@@ -114,5 +114,5 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   } catch (error) {
     console.log(error);
   }
-});
+});*/
 module.exports = router;
