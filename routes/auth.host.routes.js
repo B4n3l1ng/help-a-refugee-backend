@@ -1,14 +1,23 @@
-const { hashSync, genSaltSync } = require("bcryptjs");
+const { hashSync, genSaltSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 const Host = require("../models/Host.model");
 
 router.post("/signup", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName, country, city, picture } =
+      req.body;
     const salt = genSaltSync(10);
     const hashedPassword = hashSync(password, salt);
-    await Host.create({ email, hashedPassword });
+    await Host.create({
+      email,
+      hashedPassword,
+      firstName,
+      lastName,
+      country,
+      city,
+      picture,
+    });
     res.status(201).json({ message: "Host created" });
   } catch (error) {
     console.log(error);
