@@ -23,23 +23,22 @@ router.post("/login", async (req, res) => {
       if (compareSync(password, currentUser.hashedPassword)) {
         const userCopy = { ...currentUser._doc };
         delete userCopy.hashedPassword;
-        //       const authToken = jwt.sign(
-        //         {
-        //           expiresIn: '24h',
-        //           user: userCopy,
-        //         },
-        //         process.env.TOKEN_SECRET,
-        //         {
-        //           algorithm: 'HS256'
-        //         }
-        //       )
-        //     res.status(200).json({ status: 200, token: authToken })
-        //   } else {
-        //     res.status(400).json({ message: 'Wrong password' })
-        //   }
-        // } else {
-        //   res.status(404).json({ message: 'No user with this username' })
+        const authToken = jwt.sign(
+          {
+            expiresIn: "24h",
+            user: userCopy,
+          },
+          process.env.TOKEN_SECRET,
+          {
+            algorithm: "HS256",
+          }
+        );
+        res.status(200).json({ status: 200, token: authToken });
+      } else {
+        res.status(400).json({ message: "Wrong password" });
       }
+    } else {
+      res.status(404).json({ message: "No user with this username" });
     }
   } catch (error) {
     console.log(error);
