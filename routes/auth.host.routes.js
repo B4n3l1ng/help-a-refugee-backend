@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
     res.status(404).json({ message: "No user with this username" });
   }
 });
-
+//testing
 /*router.get("/listings", async (req, res, next) => {
   try {
     const listings = await Housing.find({ owner: authToken.user._id });
