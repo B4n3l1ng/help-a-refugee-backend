@@ -3,6 +3,9 @@ const jwt = require("jsonwebtoken");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const router = require("express").Router();
 const Host = require("../models/Host.model");
+const User = require("../models/User.model");
+const Housing = require("../models/Housing.model");
+
 
 router.post("/signup", async (req, res) => {
   try {

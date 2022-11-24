@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 const User = require("../models/User.model");
 const isAuthenticated = require("../middlewares/isAuthenticated");
+const Host = require("../models/Host.model");
+
 
 
 router.post("/signup", async (req, res) => {
