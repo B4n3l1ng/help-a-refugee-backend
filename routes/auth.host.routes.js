@@ -1,12 +1,21 @@
 const { hashSync, genSaltSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const isAuthenticated = require("../middlewares/isAuthenticated");
 const router = require("express").Router();
 const Host = require("../models/Host.model");
 
 router.post("/signup", async (req, res) => {
   try {
-    const { email, password, firstName, lastName, country, city, picture, aboutMe } =
-      req.body;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      country,
+      city,
+      picture,
+      aboutMe,
+    } = req.body;
     const salt = genSaltSync(10);
     const hashedPassword = hashSync(password, salt);
     await Host.create({
@@ -17,7 +26,7 @@ router.post("/signup", async (req, res) => {
       country,
       city,
       picture,
-      aboutMe
+      aboutMe,
     });
     res.status(201).json({ message: "Host created" });
   } catch (error) {
@@ -34,14 +43,14 @@ router.post("/login", async (req, res) => {
   const currentHost = await Host.find({ email });
   if (currentHost) {
     if (compareSync(password, currentHost.hashedPassword)) {
-      const hostCopy = { ...currentHost._doc };
+      const hostCopy = { ...currentHost };
       delete hostCopy.hashedPassword;
       const authToken = jwt.sign(
         {
           expiresIn: "6h",
           user: hostCopy,
         },
-        process.env.Token_SECRET,
+        process.env.TOKEN_SECRET,
         {
           algorithm: "HS256",
         }
@@ -55,7 +64,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-//Edit profile 
+//Edit profile
 
 router.get("/host/edit/:id", async (req, res) => {
   try {
@@ -70,7 +79,16 @@ router.get("/host/edit/:id", async (req, res) => {
 router.put("/host/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { email, password, firstName, lastName, country, city, picture, aboutMe } = req.body;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      country,
+      city,
+      picture,
+      aboutMe,
+    } = req.body;
     const salt = genSaltSync(10);
     const hashedPassword = hashSync(password, salt);
     const updatedHost = await Host.findByIdAndUpdate(
@@ -162,11 +180,9 @@ router.delete("/listings/:id", async (req, res, next) => {
   }
 });
 
-
-
-
-
-
-
+router.get("/verify", isAuthenticated, (req, res) => {
+  console.log(`req.payload`, req.payload);
+  res.status(200).json({ payload: req.payload, message: "Token OK" });
+});
 
 module.exports = router;

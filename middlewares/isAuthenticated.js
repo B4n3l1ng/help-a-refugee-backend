@@ -1,7 +1,5 @@
 const { expressjwt } = require("express-jwt");
 
-
-
 function getTokenFromHeaders(req) {
   // Check if the token is available on the request Headers
   if (
@@ -24,5 +22,3 @@ const isAuthenticated = expressjwt({
 });
 
 module.exports = isAuthenticated;
-
-
