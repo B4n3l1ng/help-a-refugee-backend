@@ -119,10 +119,9 @@ router.get("/listings", isAuthenticated, async (req, res, next) => {
   try {
     const { user } = req.payload;
     const userId = user._id;
-    git;
-    //const listings = await Housing.find({ owner: authToken.user._id });
+    const listings = await Housing.find({ owner: userId });
 
-    //res.status(201).json(listings);
+    res.status(201).json(listings);
   } catch (error) {
     console.log(error);
   }
@@ -138,8 +137,10 @@ router.get("/listings/:id", async (req, res, next) => {
   }
 });
 
-router.post("/listings", async (req, res, next) => {
+router.post("/listings", isAuthenticated, async (req, res, next) => {
   try {
+    const { user } = req.payload;
+    const userId = user._id;
     const { country, city, typeOfRoom, placesAvailable, image } = req.body;
     const newListing = await Housing.create({
       country,
@@ -147,7 +148,7 @@ router.post("/listings", async (req, res, next) => {
       typeOfRoom,
       placesAvailable,
       image,
-      owner: authToken.user._id,
+      owner: user._id,
     });
     res.json(newListing);
   } catch (error) {
