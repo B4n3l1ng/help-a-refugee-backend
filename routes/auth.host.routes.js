@@ -117,7 +117,9 @@ router.put("/host/edit/:id", async (req, res) => {
 //testing
 router.get("/listings", isAuthenticated, async (req, res, next) => {
   try {
-    console.log("Payload", req.payload);
+    const { user } = req.payload;
+    const userId = user._id;
+    git;
     //const listings = await Housing.find({ owner: authToken.user._id });
 
     //res.status(201).json(listings);
