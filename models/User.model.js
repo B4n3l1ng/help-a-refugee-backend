@@ -23,6 +23,9 @@ const UserSchema = new Schema(
     image: {
       type: String,
     },
+    aboutMe: {
+      type: String,
+    }
   }
   // {
   //   // this second object adds extra properties: `createdAt` and `updatedAt`

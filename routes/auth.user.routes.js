@@ -5,10 +5,10 @@ const User = require("../models/User.model");
 
 router.post("/signup", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName } = req.body;
     const salt = genSaltSync(10);
     const hashedPassword = hashSync(password, salt);
-    await User.create({ email, hashedPassword });
+    await User.create({ email, hashedPassword, firstName, lastName });
     res.status(201).json({ message: "User created" });
   } catch (error) {
     console.log(error);
