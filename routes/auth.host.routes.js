@@ -1,5 +1,6 @@
 const { hashSync, genSaltSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { isAuthenticated } = require("../middlewares/isAuthenticated");
 const router = require("express").Router();
 const Host = require("../models/Host.model");
 
@@ -73,5 +74,9 @@ router.post("/login", async (req, res) => {
     console.log(error);
   }
 });*/
+router.get("/verify", isAuthenticated, (req, res) => {
+  console.log(`req.payload`, req.payload);
+  res.status(200).json({ payload: req.payload, message: "Token OK" });
+});
 
 module.exports = router;
