@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
 
     if (currentHost) {
       if (compareSync(password, currentHost.hashedPassword)) {
-        const hostCopy = { ...currentHost };
+        const hostCopy = { ...currentHost._doc };
         delete hostCopy.hashedPassword;
         const authToken = jwt.sign(
           {
@@ -115,11 +115,12 @@ router.put("/host/edit/:id", async (req, res) => {
 });
 
 //testing
-router.get("/listings", async (req, res, next) => {
+router.get("/listings", isAuthenticated, async (req, res, next) => {
   try {
-    const listings = await Housing.find({ owner: authToken.user._id });
+    console.log("Payload", req.payload);
+    //const listings = await Housing.find({ owner: authToken.user._id });
 
-    res.status(201).json(listings);
+    //res.status(201).json(listings);
   } catch (error) {
     console.log(error);
   }

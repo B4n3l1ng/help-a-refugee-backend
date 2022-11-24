@@ -27,7 +27,7 @@ router.post("/login", async (req, res) => {
 
     if (currentUser) {
       if (compareSync(password, currentUser.hashedPassword)) {
-        const userCopy = { ...currentUser };
+        const userCopy = { ...currentUser._doc };
         delete userCopy.hashedPassword;
         const authToken = jwt.sign(
           {
