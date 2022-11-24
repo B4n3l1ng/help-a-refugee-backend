@@ -5,7 +5,7 @@ const HousingSchema = new Schema(
     country: {
       type: String,
       required: [true, "Country is required"],
-    }
+    },
 
     city: {
       type: String,
