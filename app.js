@@ -17,14 +17,15 @@ require("./config")(app);
 // 👇 Start handling routes here
 const isAuthenticated = require("./middlewares/isAuthenticated");
 
+
 const indexRoutes = require("./routes/index.routes");
-app.use("/api", indexRoutes);
+app.use("/api", indexRoutes, isAuthenticated);
 
 const authHostRoutes = require("./routes/auth.host.routes");
-app.use("/host", authHostRoutes);
+app.use("/host", authHostRoutes, isAuthenticated);
 
 const authUserRoutes = require("./routes/auth.user.routes");
-app.use("/user", authUserRoutes);
+app.use("/user", authUserRoutes, isAuthenticated);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
