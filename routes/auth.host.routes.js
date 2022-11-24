@@ -1,6 +1,6 @@
 const { hashSync, genSaltSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { isAuthenticated } = require("../middlewares/isAuthenticated");
+const isAuthenticated = require("../middlewares/isAuthenticated");
 const router = require("express").Router();
 const Host = require("../models/Host.model");
 
