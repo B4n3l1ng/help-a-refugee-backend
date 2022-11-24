@@ -5,8 +5,6 @@ const User = require("../models/User.model");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const Host = require("../models/Host.model");
 
-
-
 router.post("/signup", async (req, res) => {
   try {
     const { email, password, firstName, lastName } = req.body;
@@ -51,7 +49,6 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  res.json("Pinging login");
 });
 
 //Edit profile//
@@ -96,9 +93,7 @@ router.get("/user/listings", async (req, res) => {
 router.get("/user/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const listingDetails = await Listing
-      .findById(id)
-      .populate("host");
+    const listingDetails = await Listing.findById(id).populate("host");
     res.json(listingDetails);
   } catch (error) {
     res.status(404).json({ message: "No listing with this id" });
@@ -116,15 +111,12 @@ router.get("/user/host/:id", async (req, res) => {
   }
 });
 
-
 // Route for the users to be able to message the host from the listing page regarding the listing//
 router.post("/user/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { message } = req.body;
-    const listingDetails = await Listing
-      .findById(id)
-      .populate("host");
+    const listingDetails = await Listing.findById(id).populate("host");
     res.json(listingDetails);
   } catch (error) {
     res.status(404).json({ message: "No listing with this id" });
@@ -145,9 +137,7 @@ router.get("/user/messages", async (req, res) => {
 router.get("/user/messages/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const messageDetails = await Message
-      .findById(id)
-      .populate("host");
+    const messageDetails = await Message.findById(id).populate("host");
     res.json(messageDetails);
   } catch (error) {
     res.status(404).json({ message: "No message with this id" });
@@ -156,9 +146,7 @@ router.get("/user/messages/:id", async (req, res) => {
 
 router.delete("/user/messages/:id", async (req, res, next) => {
   const { id } = req.params;
-  const messageDetails = await Message
-    .findByIdAndDelete(id)
-    .populate("host");
+  const messageDetails = await Message.findByIdAndDelete(id).populate("host");
   res.json(messageDetails);
 });
 
@@ -167,9 +155,7 @@ router.post("/user/messages/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { message } = req.body;
-    const messageDetails = await Message
-      .findById(id)
-      .populate("host");
+    const messageDetails = await Message.findById(id).populate("host");
     res.json(messageDetails);
   } catch (error) {
     res.status(404).json({ message: "No message with this id" });
@@ -190,24 +176,17 @@ router.get("/user/bookings", async (req, res) => {
 router.get("/user/bookings/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const bookingDetails = await Booking
-      .findById(id)
-      .populate("host");
+    const bookingDetails = await Booking.findById(id).populate("host");
     res.json(bookingDetails);
   } catch (error) {
     res.status(404).json({ message: "No booking with this id" });
   }
 });
 
-
-
 router.get("/verify", isAuthenticated, (req, res) => {
   console.log(`req.payload`, req.payload);
   res.status(200).json({ payload: req.payload, message: "Token OK" });
 });
-
-
-
 
 //Log out route//
 router.get("/logout", (req, res, next) => {});
