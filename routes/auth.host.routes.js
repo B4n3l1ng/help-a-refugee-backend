@@ -1,11 +1,10 @@
-const { hashSync, genSaltSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const router = require("express").Router();
 const Host = require("../models/Host.model");
 const User = require("../models/User.model");
 const Housing = require("../models/Housing.model");
-
+const { compareSync, genSaltSync, hashSync } = require("bcryptjs");
 
 router.post("/signup", async (req, res) => {
   try {
@@ -38,32 +37,33 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  if (email === "" || password === "") {
-    res.status(400).json({ message: "Provide both email and password." });
-    return;
-  }
-  const currentHost = await Host.find({ email });
-  if (currentHost) {
-    if (compareSync(password, currentHost.hashedPassword)) {
-      const hostCopy = { ...currentHost };
-      delete hostCopy.hashedPassword;
-      const authToken = jwt.sign(
-        {
-          expiresIn: "6h",
-          user: hostCopy,
-        },
-        process.env.TOKEN_SECRET,
-        {
-          algorithm: "HS256",
-        }
-      );
-      res.status(200).json({ status: 200, token: authToken });
+  try {
+    const { email, password } = req.body;
+    const currentHost = await Host.findOne({ email });
+
+    if (currentHost) {
+      if (compareSync(password, currentHost.hashedPassword)) {
+        const hostCopy = { ...currentHost };
+        delete hostCopy.hashedPassword;
+        const authToken = jwt.sign(
+          {
+            expiresIn: "24h",
+            user: hostCopy,
+          },
+          process.env.TOKEN_SECRET,
+          {
+            algorithm: "HS256",
+          }
+        );
+        res.status(200).json({ status: 200, token: authToken });
+      } else {
+        res.status(400).json({ message: "Wrong password" });
+      }
     } else {
-      res.status(400).json({ message: "Wrong password" });
+      res.status(404).json({ message: "No user with this username" });
     }
-  } else {
-    res.status(404).json({ message: "No user with this username" });
+  } catch (error) {
+    console.log(error);
   }
 });
 
@@ -183,9 +183,6 @@ router.delete("/listings/:id", async (req, res, next) => {
   }
 });
 
-
-
-
 //Route for the host to see and receive the messages from the users and to be able to reply to them
 router.get("/messages", async (req, res, next) => {
   try {
@@ -199,8 +196,7 @@ router.get("/messages", async (req, res, next) => {
 router.get("/messages/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const message = await Message
-      .findById(id)
+    const message = await Message.findById(id)
       .populate("owner")
       .populate("user");
     res.json(message);
@@ -208,8 +204,6 @@ router.get("/messages/:id", async (req, res, next) => {
     console.log(error);
   }
 });
-
-
 
 router.post("/messages", async (req, res, next) => {
   try {
@@ -249,9 +243,7 @@ router.put("/messages/:id", async (req, res, next) => {
 router.get("/users/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await User
-      .findById(id)
-      .populate("user");
+    const user = await User.findById(id).populate("user");
     res.json(user);
   } catch (error) {
     console.log(error);
@@ -262,16 +254,12 @@ router.get("/users/:id", async (req, res, next) => {
 router.delete("/messages/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    await Message
-      .findByIdAndDelete(id);
+    await Message.findByIdAndDelete(id);
     res.json({ message: "Message deleted" });
   } catch (error) {
     console.log(error);
   }
 });
-
-
-
 
 router.get("/verify", isAuthenticated, (req, res) => {
   console.log(`req.payload`, req.payload);
