@@ -1,4 +1,4 @@
-const { genSaltSync, hashSync } = require("bcryptjs");
+const { genSaltSync, hashSync, compareSync } = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 const User = require("../models/User.model");
@@ -23,7 +23,7 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const currentUser = await User.findOne({ email });
 
-    if (email) {
+    if (currentUser) {
       if (compareSync(password, currentUser.hashedPassword)) {
         const userCopy = { ...currentUser };
         delete userCopy.hashedPassword;
