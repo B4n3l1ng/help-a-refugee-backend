@@ -2,6 +2,11 @@ const { Schema, model } = require("mongoose");
 
 const HousingSchema = new Schema(
   {
+    country: {
+      type: String,
+      required: [true, "Country is required"],
+    },
+
     city: {
       type: String,
       required: [true, "City is required."],
