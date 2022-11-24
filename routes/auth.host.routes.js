@@ -33,14 +33,14 @@ router.post("/login", async (req, res) => {
   const currentHost = await Host.find({ email });
   if (currentHost) {
     if (compareSync(password, currentHost.hashedPassword)) {
-      const hostCopy = { ...currentHost._doc };
+      const hostCopy = { ...currentHost };
       delete hostCopy.hashedPassword;
       const authToken = jwt.sign(
         {
           expiresIn: "6h",
           user: hostCopy,
         },
-        process.env.Token_SECRET,
+        process.env.TOKEN_SECRET,
         {
           algorithm: "HS256",
         }
