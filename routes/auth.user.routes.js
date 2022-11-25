@@ -4,6 +4,8 @@ const router = require("express").Router();
 const User = require("../models/User.model");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const Host = require("../models/Host.model");
+const Housing = require("../models/Housing.model");
+
 
 router.post("/signup", async (req, res) => {
   try {
@@ -79,7 +81,7 @@ router.delete("/user/:id", async (req, res, next) => {
   res.json(userProfile);
 });
 
-//Route for the users to be able to see all of the listinggs posted by the hosts//
+//Route for the users to be able to see all of the listings posted by the hosts//
 router.get("/user/listings", async (req, res) => {
   try {
     const listings = await Listing.find();
@@ -162,10 +164,26 @@ router.post("/user/messages/:id", async (req, res) => {
   }
 });
 
+//Route for the users to be able to book a listing//
+router.post("/user/listings/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message } = req.body;
+    const listingDetails = await Housing
+      .findById(id)
+      .populate("host")
+      .populate("user");
+    res.json(listingDetails);
+  } catch (error) {
+    res.status(404).json({ message: "No listing with this id" });
+  }
+});
+
+
 //Route for the users to be able to see the listing they have booked//
 router.get("/user/bookings", async (req, res) => {
   try {
-    const bookings = await Booking.find();
+    const bookings = await Housing.find();
     res.json(bookings);
   } catch (error) {
     res.status(404).json({ message: "No bookings found" });
@@ -176,7 +194,7 @@ router.get("/user/bookings", async (req, res) => {
 router.get("/user/bookings/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const bookingDetails = await Booking.findById(id).populate("host");
+    const bookingDetails = await Housing.findById(id).populate("host");
     res.json(bookingDetails);
   } catch (error) {
     res.status(404).json({ message: "No booking with this id" });
