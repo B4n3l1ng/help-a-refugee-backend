@@ -148,7 +148,7 @@ router.post("/listings", isAuthenticated, async (req, res, next) => {
       typeOfRoom,
       placesAvailable,
       image,
-      owner: user._id,
+      owner: userId,
     });
     res.json(newListing);
   } catch (error) {
