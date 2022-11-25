@@ -6,7 +6,6 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const Host = require("../models/Host.model");
 const Housing = require("../models/Housing.model");
 
-
 router.post("/signup", async (req, res) => {
   try {
     const { email, password, firstName, lastName } = req.body;
@@ -84,7 +83,7 @@ router.delete("/user/:id", async (req, res, next) => {
 //Route for the users to be able to see all of the listings posted by the hosts//
 router.get("/user/listings", async (req, res) => {
   try {
-    const listings = await Listing.find();
+    const listings = await Housing.find();
     res.json(listings);
   } catch (error) {
     res.status(404).json({ message: "No listings found" });
@@ -169,8 +168,7 @@ router.post("/user/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { message } = req.body;
-    const listingDetails = await Housing
-      .findById(id)
+    const listingDetails = await Housing.findById(id)
       .populate("host")
       .populate("user");
     res.json(listingDetails);
@@ -178,7 +176,6 @@ router.post("/user/listings/:id", async (req, res) => {
     res.status(404).json({ message: "No listing with this id" });
   }
 });
-
 
 //Route for the users to be able to see the listing they have booked//
 router.get("/user/bookings", async (req, res) => {
