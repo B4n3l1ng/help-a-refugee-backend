@@ -4,6 +4,7 @@ const router = require("express").Router();
 const User = require("../models/User.model");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const Host = require("../models/Host.model");
+const Housing = require("../models/Housing.model");
 
 router.post("/signup", async (req, res) => {
   try {
@@ -82,7 +83,7 @@ router.delete("/user/:id", async (req, res, next) => {
 //Route for the users to be able to see all of the listinggs posted by the hosts//
 router.get("/user/listings", async (req, res) => {
   try {
-    const listings = await Listing.find();
+    const listings = await Housing.find();
     res.json(listings);
   } catch (error) {
     res.status(404).json({ message: "No listings found" });
