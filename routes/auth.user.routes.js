@@ -52,6 +52,17 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//Get profile//
+router.get("/user/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userProfile = await User.findById(id);
+    res.json({ ...userProfile._doc });
+  } catch (error) {
+    res.status(404).json({ message: "No user with this id" });
+  }
+});
+
 //Edit profile//
 router.get("/user/edit/:id", async (req, res) => {
   try {
@@ -68,8 +79,9 @@ router.put("/user/edit/:id", async (req, res) => {
   const body = req.body;
 
   const userProfile = await User.findByIdAndUpdate(id, body, { new: true });
+  console.log(userProfile);
 
-  res.json({ userProfile });
+  res.json({ user: userProfile });
 });
 
 //Delete profile//
