@@ -89,7 +89,7 @@ router.delete("/user/:id", async (req, res, next) => {
   const { id } = req.params;
   const userProfile = await User.findByIdAndDelete(id);
 
-  res.json(userProfile);
+  res.status(201).json({ message: "Please create an user" });
 });
 
 //Route for the users to be able to see all of the listings posted by the hosts//
