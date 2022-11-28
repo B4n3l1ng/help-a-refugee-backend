@@ -141,13 +141,14 @@ router.post("/listings", isAuthenticated, async (req, res, next) => {
   try {
     const { user } = req.payload;
     const userId = user._id;
-    const { country, city, typeOfRoom, placesAvailable, image } = req.body;
+    const { newCountry, newCity, newTypeOfRoom, newPlacesAvailable, newImage } =
+      req.body;
     const newListing = await Housing.create({
-      country,
-      city,
-      typeOfRoom,
-      placesAvailable,
-      image,
+      country: newCountry,
+      city: newCity,
+      typeOfRoom: newTypeOfRoom,
+      placesAvailable: newPlacesAvailable,
+      image: newImage,
       owner: userId,
     });
     res.json(newListing);
@@ -159,19 +160,20 @@ router.post("/listings", isAuthenticated, async (req, res, next) => {
 router.put("/listings/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { country, city, typeOfRoom, placesAvailable, image } = req.body;
+    const { newCountry, newCity, newTypeOfRoom, newPlacesAvailable, newImage } =
+      req.body;
     const updatedListing = await Housing.findByIdAndUpdate(
       id,
       {
-        country,
-        city,
-        typeOfRoom,
-        placesAvailable,
-        image,
+        country: newCountry,
+        city: newCity,
+        typeOfRoom: newTypeOfRoom,
+        placesAvailable: newPlacesAvailable,
+        image: newImage,
       },
       { new: true }
     );
-    res.json(updatedListing);
+    res.status(200);
   } catch (error) {
     console.log(error);
   }
