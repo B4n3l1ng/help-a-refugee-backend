@@ -5,6 +5,11 @@ const User = require("../models/User.model");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const Host = require("../models/Host.model");
 const Housing = require("../models/Housing.model");
+const uploader = require("../middlewares/cloudinary.config");
+
+router.post("/upload", uploader.single("imageUrl"), (req, res, next) => {
+  console.log("file is:", req.file.path);
+});
 
 router.post("/signup", async (req, res) => {
   try {

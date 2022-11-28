@@ -5,19 +5,23 @@ const Host = require("../models/Host.model");
 const User = require("../models/User.model");
 const Housing = require("../models/Housing.model");
 const { compareSync, genSaltSync, hashSync } = require("bcryptjs");
+const uploader = require("../middlewares/cloudinary.config");
+
+router.post("/upload", uploader.single("imageUrl"), (req, res, next) => {
+  console.log("file is:", req.file);
+  if (!req.file) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+  res.json({ fileUrl: req.file.path });
+});
 
 router.post("/signup", async (req, res) => {
   try {
-    const {
-      email,
-      password,
-      firstName,
-      lastName,
-      country,
-      city,
-      picture,
-      aboutMe,
-    } = req.body;
+    console.log("Check here", req.body);
+    /*const { email, password, firstName, lastName, country, city, aboutMe } =
+      req.body;
+    //const image = req.file.path;
     const salt = genSaltSync(10);
     const hashedPassword = hashSync(password, salt);
     await Host.create({
@@ -27,10 +31,10 @@ router.post("/signup", async (req, res) => {
       lastName,
       country,
       city,
-      picture,
+      //image,
       aboutMe,
     });
-    res.status(201).json({ message: "Host created" });
+    res.status(201).json({ message: "Host created" });*/
   } catch (error) {
     console.log(error);
   }
