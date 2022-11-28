@@ -16,11 +16,11 @@ const cors = require("cors");
 const FRONTEND_URL = process.env.ORIGIN || "http://localhost:5173";
 
 // Socket.io
-const socketIO = require('socket.io')(http, {
-  cors: {
-      origin: "http://localhost:5173"
-  }
-});
+// const socketIO = require('socket.io')(http, {
+//   cors: {
+//       origin: "http://localhost:5173"
+//   }
+// });
 
 // Middleware configuration
 module.exports = (app) => {

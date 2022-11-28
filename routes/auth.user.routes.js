@@ -93,7 +93,7 @@ router.delete("/user/:id", async (req, res, next) => {
 });
 
 //Route for the users to be able to see all of the listings posted by the hosts//
-router.get("/user/listings", async (req, res) => {
+router.get("/listings", async (req, res) => {
   try {
     const listings = await Housing.find();
     res.json(listings);
