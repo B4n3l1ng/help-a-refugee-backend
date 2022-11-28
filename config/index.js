@@ -15,6 +15,13 @@ const cors = require("cors");
 
 const FRONTEND_URL = process.env.ORIGIN || "http://localhost:5173";
 
+// Socket.io
+const socketIO = require('socket.io')(http, {
+  cors: {
+      origin: "http://localhost:5173"
+  }
+});
+
 // Middleware configuration
 module.exports = (app) => {
   // Because this is a server that will accept requests from outside and it will be hosted ona server with a `proxy`, express needs to know that it should trust that setting.
