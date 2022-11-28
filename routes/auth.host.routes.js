@@ -7,15 +7,6 @@ const Housing = require("../models/Housing.model");
 const { compareSync, genSaltSync, hashSync } = require("bcryptjs");
 const uploader = require("../middlewares/cloudinary.config");
 
-/*router.post("/upload", uploader.single("imageUrl"), (req, res, next) => {
-  console.log("file is:", req.file);
-  if (!req.file) {
-    next(new Error("No file uploaded!"));
-    return;
-  }
-  res.json({ fileUrl: req.file.path });
-});*/
-
 router.post("/signup", uploader.single("imageUrl"), async (req, res) => {
   try {
     console.log("Check here", req.body);
