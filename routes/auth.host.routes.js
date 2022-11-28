@@ -173,7 +173,7 @@ router.put("/listings/:id", async (req, res, next) => {
       },
       { new: true }
     );
-    res.status(200);
+    res.json(updatedListing);
   } catch (error) {
     console.log(error);
   }
