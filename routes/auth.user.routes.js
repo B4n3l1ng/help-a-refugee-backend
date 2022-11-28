@@ -53,7 +53,7 @@ router.post("/login", async (req, res) => {
 });
 
 //Get profile//
-router.get("/:id", async (req, res) => {
+router.get("user/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userProfile = await User.findById(id);
@@ -64,7 +64,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //Edit profile//
-router.get("/edit/:id", async (req, res) => {
+router.get("user/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userProfile = await User.findById(id);
@@ -93,7 +93,7 @@ router.delete("/user/:id", async (req, res, next) => {
 });
 
 //Route for the users to be able to see all of the listings posted by the hosts//
-router.get("/listings", async (req, res) => {
+router.get("user/listings", async (req, res) => {
   try {
     const listings = await Housing.find();
     res.json(listings);
@@ -103,7 +103,7 @@ router.get("/listings", async (req, res) => {
 });
 
 //Route for the users to be able to see the listing details including a link to the host profile//
-router.get("/listings/:id", async (req, res) => {
+router.get("user/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const listingDetails = await Listing.findById(id).populate("host");
@@ -214,8 +214,5 @@ router.get("/verify", isAuthenticated, (req, res) => {
   console.log(`req.payload`, req.payload);
   res.status(200).json({ payload: req.payload, message: "Token OK" });
 });
-
-//Log out route//
-router.get("/logout", (req, res, next) => {});
 
 module.exports = router;
