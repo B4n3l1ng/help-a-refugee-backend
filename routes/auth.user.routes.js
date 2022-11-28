@@ -53,7 +53,7 @@ router.post("/login", async (req, res) => {
 });
 
 //Get profile//
-router.get("/user/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userProfile = await User.findById(id);
@@ -64,7 +64,7 @@ router.get("/user/:id", async (req, res) => {
 });
 
 //Edit profile//
-router.get("/user/edit/:id", async (req, res) => {
+router.get("/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userProfile = await User.findById(id);
@@ -74,7 +74,7 @@ router.get("/user/edit/:id", async (req, res) => {
   }
 });
 
-router.put("/user/edit/:id", async (req, res) => {
+router.put("/edit/:id", async (req, res) => {
   const { id } = req.params;
   const body = req.body;
 
@@ -85,7 +85,7 @@ router.put("/user/edit/:id", async (req, res) => {
 });
 
 //Delete profile//
-router.delete("/user/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   const { id } = req.params;
   const userProfile = await User.findByIdAndDelete(id);
 
@@ -93,7 +93,7 @@ router.delete("/user/:id", async (req, res, next) => {
 });
 
 //Route for the users to be able to see all of the listings posted by the hosts//
-router.get("/user/listings", async (req, res) => {
+router.get("/listings", async (req, res) => {
   try {
     const listings = await Housing.find();
     res.json(listings);
@@ -103,7 +103,7 @@ router.get("/user/listings", async (req, res) => {
 });
 
 //Route for the users to be able to see the listing details including a link to the host profile//
-router.get("/user/listings/:id", async (req, res) => {
+router.get("/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const listingDetails = await Listing.findById(id).populate("host");
@@ -114,7 +114,7 @@ router.get("/user/listings/:id", async (req, res) => {
 });
 
 //Route for the user to be able to see the host's profile page//
-router.get("/user/host/:id", async (req, res) => {
+router.get("/host/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const hostProfile = await Host.findById(id);
@@ -125,7 +125,7 @@ router.get("/user/host/:id", async (req, res) => {
 });
 
 // Route for the users to be able to message the host from the listing page regarding the listing//
-router.post("/user/listings/:id", async (req, res) => {
+router.post("/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { message } = req.body;
@@ -137,7 +137,7 @@ router.post("/user/listings/:id", async (req, res) => {
 });
 
 //Route for the users to be able to see the messages they have received from the hosts//
-router.get("/user/messages", async (req, res) => {
+router.get("/messages", async (req, res) => {
   try {
     const messages = await Message.find();
     res.json(messages);
@@ -147,7 +147,7 @@ router.get("/user/messages", async (req, res) => {
 });
 
 //Route for users to be able to read messages individually and delete them//
-router.get("/user/messages/:id", async (req, res) => {
+router.get("/messages/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const messageDetails = await Message.findById(id).populate("host");
@@ -157,14 +157,14 @@ router.get("/user/messages/:id", async (req, res) => {
   }
 });
 
-router.delete("/user/messages/:id", async (req, res, next) => {
+router.delete("/messages/:id", async (req, res, next) => {
   const { id } = req.params;
   const messageDetails = await Message.findByIdAndDelete(id).populate("host");
   res.json(messageDetails);
 });
 
 //Route for the users to be able to reply to the messages they have received from the hosts//
-router.post("/user/messages/:id", async (req, res) => {
+router.post("/messages/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { message } = req.body;
@@ -176,7 +176,7 @@ router.post("/user/messages/:id", async (req, res) => {
 });
 
 //Route for the users to be able to book a listing//
-router.post("/user/listings/:id", async (req, res) => {
+router.post("/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { message } = req.body;
@@ -190,7 +190,7 @@ router.post("/user/listings/:id", async (req, res) => {
 });
 
 //Route for the users to be able to see the listing they have booked//
-router.get("/user/bookings", async (req, res) => {
+router.get("/bookings", async (req, res) => {
   try {
     const bookings = await Housing.find();
     res.json(bookings);
@@ -200,7 +200,7 @@ router.get("/user/bookings", async (req, res) => {
 });
 
 //Route for the users to be able to see the booking details including a link to the host profile//
-router.get("/user/bookings/:id", async (req, res) => {
+router.get("/bookings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const bookingDetails = await Housing.findById(id).populate("host");
