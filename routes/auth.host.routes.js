@@ -114,7 +114,6 @@ router.get("/listings", isAuthenticated, async (req, res, next) => {
     const { user } = req.payload;
     const userId = user._id;
     const listings = await Housing.find({ owner: userId });
-
     res.status(201).json(listings);
   } catch (error) {
     console.log(error);

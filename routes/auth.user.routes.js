@@ -119,7 +119,10 @@ router.delete("/:id", async (req, res, next) => {
 //Route for the users to be able to see all of the listings posted by the hosts//
 router.get("/listings", uploader.single("imageUrl"), async (req, res) => {
   try {
-    const listings = await Housing.find();
+    const listings = await Housing.find().populate(
+      "owner",
+      "firstName lastName"
+    );
     res.json(listings);
   } catch (error) {
     res.status(404).json({ message: "No listings found" });
@@ -130,7 +133,7 @@ router.get("/listings", uploader.single("imageUrl"), async (req, res) => {
 router.get("/user/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const listingDetails = await Listing.findById(id).populate("host");
+    const listingDetails = await Listing.findById(id);
     res.json(listingDetails);
   } catch (error) {
     res.status(404).json({ message: "No listing with this id" });
