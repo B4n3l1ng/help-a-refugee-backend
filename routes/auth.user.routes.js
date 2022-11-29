@@ -11,12 +11,21 @@ router.post("/upload", uploader.single("imageUrl"), (req, res, next) => {
   console.log("file is:", req.file.path);
 });
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", uploader.single("imageUrl"), async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    console.log("hello", req.body);
+    const { email, password, firstName, lastName, aboutMe } = req.body;
+    const image = req.file.path;
     const salt = genSaltSync(10);
     const hashedPassword = hashSync(password, salt);
-    await User.create({ email, hashedPassword, firstName, lastName });
+    await User.create({
+      email,
+      hashedPassword,
+      firstName,
+      lastName,
+      aboutMe,
+      image,
+    });
     res.status(201).json({ message: "User created" });
   } catch (error) {
     console.log(error);
@@ -69,25 +78,35 @@ router.get("/user/:id", async (req, res) => {
 });
 
 //Edit profile//
-router.get("/user/edit/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const userProfile = await User.findById(id);
-    res.json({ ...userProfile._doc });
-  } catch (error) {
-    res.status(404).json({ message: "No user with this id" });
+router.get(
+  "/user/edit/:id",
+  isAuthenticated,
+  uploader.single("imageUrl"),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const userProfile = await User.findById(id);
+      res.json({ ...userProfile._doc });
+    } catch (error) {
+      res.status(404).json({ message: "No user with this id" });
+    }
   }
-});
+);
 
-router.put("/edit/:id", async (req, res) => {
-  const { id } = req.params;
-  const body = req.body;
+router.put(
+  "/edit/:id",
+  isAuthenticated,
+  uploader.single("imageUrl"),
+  async (req, res) => {
+    const { id } = req.params;
+    const body = req.body;
 
-  const userProfile = await User.findByIdAndUpdate(id, body, { new: true });
-  console.log(userProfile);
+    const userProfile = await User.findByIdAndUpdate(id, body, { new: true });
+    console.log(userProfile);
 
-  res.json({ user: userProfile });
-});
+    res.json({ user: userProfile });
+  }
+);
 
 //Delete profile//
 router.delete("/:id", async (req, res, next) => {
@@ -98,7 +117,7 @@ router.delete("/:id", async (req, res, next) => {
 });
 
 //Route for the users to be able to see all of the listings posted by the hosts//
-router.get("/listings", async (req, res) => {
+router.get("/listings", uploader.single("imageUrl"), async (req, res) => {
   try {
     const listings = await Housing.find();
     res.json(listings);
