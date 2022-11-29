@@ -98,13 +98,25 @@ router.put(
   isAuthenticated,
   uploader.single("imageUrl"),
   async (req, res) => {
-    const { id } = req.params;
-    const body = req.body;
-
-    const userProfile = await User.findByIdAndUpdate(id, body, { new: true });
-    console.log(userProfile);
-
-    res.json({ user: userProfile });
+    try {
+      const { id } = req.params;
+      const { email, firstName, lastName, aboutMe } = req.body;
+      const oldUser = await User.findById(id);
+      let image;
+      if (req.file) {
+        image = req.file.path;
+      } else {
+        image = oldUser.image;
+      }
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        { email, firstName, lastName, aboutMe },
+        { new: true }
+      );
+      res.status(200).json({ user: updatedUser });
+    } catch (error) {
+      res.status(404).json({ message: "No user with this id" });
+    }
   }
 );
 

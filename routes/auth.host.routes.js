@@ -63,20 +63,15 @@ router.post("/login", async (req, res) => {
 
 //Edit profile
 
-router.get(
-  "/host/edit/:id",
-  isAuthenticated,
-  uploader.single("imageUrl"),
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-      const hostProfile = await Host.findById(id);
-      res.json({ ...hostProfile._doc });
-    } catch (error) {
-      res.status(404).json({ message: "No host with this id" });
-    }
+router.get("/host/edit/:id", uploader.single("imageUrl"), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const hostProfile = await Host.findById(id);
+    res.json({ ...hostProfile._doc });
+  } catch (error) {
+    res.status(404).json({ message: "No host with this id" });
   }
-);
+});
 
 router.put(
   "/host/edit/:id",
