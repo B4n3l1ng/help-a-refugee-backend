@@ -94,7 +94,7 @@ router.get(
 );
 
 router.put(
-  "/edit/:id",
+  "/user/edit/:id",
   isAuthenticated,
   uploader.single("imageUrl"),
   async (req, res) => {
