@@ -9,7 +9,6 @@ const uploader = require("../middlewares/cloudinary.config");
 
 router.post("/signup", uploader.single("imageUrl"), async (req, res) => {
   try {
-    console.log("Check here", req.body);
     const { email, password, firstName, lastName, country, city, aboutMe } =
       req.body;
     const image = req.file.path;
@@ -132,47 +131,66 @@ router.get("/listings/:id", async (req, res, next) => {
   }
 });
 
-router.post("/listings", isAuthenticated, async (req, res, next) => {
-  try {
-    const { user } = req.payload;
-    const userId = user._id;
-    const { newCountry, newCity, newTypeOfRoom, newPlacesAvailable, newImage } =
-      req.body;
-    const newListing = await Housing.create({
-      country: newCountry,
-      city: newCity,
-      typeOfRoom: newTypeOfRoom,
-      placesAvailable: newPlacesAvailable,
-      image: newImage,
-      owner: userId,
-    });
-    res.json(newListing);
-  } catch (error) {
-    console.log(error);
+router.post(
+  "/listings",
+  isAuthenticated,
+  uploader.single("imageUrl"),
+  async (req, res, next) => {
+    try {
+      const { user } = req.payload;
+      const userId = user._id;
+      console.log(req.body);
+      const image = req.file.path;
+      const { country, city, typeOfRoom, placesAvailable } = req.body;
+      const newListing = await Housing.create({
+        country,
+        city,
+        typeOfRoom,
+        placesAvailable,
+        image,
+        owner: userId,
+      });
+      res.json(newListing);
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
-router.put("/listings/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { newCountry, newCity, newTypeOfRoom, newPlacesAvailable, newImage } =
-      req.body;
-    const updatedListing = await Housing.findByIdAndUpdate(
-      id,
-      {
-        country: newCountry,
-        city: newCity,
-        typeOfRoom: newTypeOfRoom,
-        placesAvailable: newPlacesAvailable,
-        image: newImage,
-      },
-      { new: true }
-    );
-    res.json(updatedListing);
-  } catch (error) {
-    console.log(error);
+router.put(
+  "/listings/:id",
+  uploader.single("imageUrl"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      console.log("body", req.body);
+      const { country, city, typeOfRoom, placesAvailable } = req.body;
+      let image;
+      const oldListing = await Housing.findById(id);
+      console.log("Image URL", oldListing.image);
+      if (req.file) {
+        image = req.file.path;
+      } else {
+        image = oldListing.image;
+      }
+
+      const updatedListing = await Housing.findByIdAndUpdate(
+        id,
+        {
+          country,
+          city,
+          typeOfRoom,
+          placesAvailable,
+          image,
+        },
+        { new: true }
+      );
+      res.json(updatedListing);
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 router.delete("/listings/:id", async (req, res, next) => {
   try {
