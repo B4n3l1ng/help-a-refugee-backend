@@ -63,50 +63,55 @@ router.post("/login", async (req, res) => {
 
 //Edit profile
 
-router.get("/host/edit/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const hostProfile = await Host.findById(id);
-    res.json({ ...hostProfile._doc });
-  } catch (error) {
-    res.status(404).json({ message: "No host with this id" });
+router.get(
+  "/host/edit/:id",
+  isAuthenticated,
+  uploader.single("imageUrl"),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const hostProfile = await Host.findById(id);
+      res.json({ ...hostProfile._doc });
+    } catch (error) {
+      res.status(404).json({ message: "No host with this id" });
+    }
   }
-});
+);
 
-router.put("/host/edit/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      email,
-      password,
-      firstName,
-      lastName,
-      country,
-      city,
-      picture,
-      aboutMe,
-    } = req.body;
-    const salt = genSaltSync(10);
-    const hashedPassword = hashSync(password, salt);
-    const updatedHost = await Host.findByIdAndUpdate(
-      id,
-      {
-        email,
-        hashedPassword,
-        firstName,
-        lastName,
-        country,
-        city,
-        picture,
-        aboutMe,
-      },
-      { new: true }
-    );
-    res.status(200).json({ ...updatedHost._doc });
-  } catch (error) {
-    res.status(404).json({ message: "No host with this id" });
+router.put(
+  "/host/edit/:id",
+  isAuthenticated,
+  uploader.single("imageUrl"),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { email, firstName, lastName, country, city, aboutMe } = req.body;
+      const oldHost = await Host.findById(id);
+      let image;
+      if (req.file) {
+        image = req.file.path;
+      } else {
+        image = oldHost.image;
+      }
+      const updatedHost = await Host.findByIdAndUpdate(
+        id,
+        {
+          email,
+          firstName,
+          lastName,
+          country,
+          city,
+          aboutMe,
+          image,
+        },
+        { new: true }
+      );
+      res.status(200).json({ user: updatedHost });
+    } catch (error) {
+      res.status(404).json({ message: "No host with this id" });
+    }
   }
-});
+);
 
 //testing
 router.get("/listings", isAuthenticated, async (req, res, next) => {
