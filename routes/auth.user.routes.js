@@ -6,6 +6,7 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const Host = require("../models/Host.model");
 const Housing = require("../models/Housing.model");
 const uploader = require("../middlewares/cloudinary.config");
+const nodemailer = require("nodemailer");
 
 router.post("/upload", uploader.single("imageUrl"), (req, res, next) => {
   console.log("file is:", req.file.path);
@@ -151,6 +152,40 @@ router.put("/listings/:id", async (req, res) => {
       { new: true }
     );
     console.log("new housing", listing);
+
+    // const { email,subject, message } = req.body.host;
+    const transporter = nodemailer.createTransport({
+      service: "gmail" ,
+      port: 465,
+      secure: true,
+      auth: {
+        user: "hostarefugeeironhack@gmail.com",
+        pass: "FTDxtQUom4&%$2kmF95q0U^rMckmpd",
+      },
+    });
+
+    let details = {
+      from: "hostarefugeeironhack@gmail.com",
+      to:  `eric.coimbra@gmail.com`,
+      subject: "Verify your email",
+      text: "Please click the button to verify",
+      html: `
+      <div style= "background-color: powderblue; text-align: center; padding: 20px; border-radius: 20px">
+      <img style="height: 350px" src='cid:logo'/>
+      <h2>Ironhack Confirmation Email</h2>
+      <h3>Welcome User!</h3>
+      <h3>Thanks for joining our community, Please confirm your email by clicking the button below</h3>
+      </div>`,
+    };
+
+    transporter.sendMail(details, (err) => {
+      if (err) {
+        console.log("There was an error", err);
+      } else {
+        console.log("Email has been sent");
+      }
+    });
+
     res.status(200);
   } catch (error) {
     console.log(error);
@@ -194,29 +229,29 @@ router.post("/listings/:id", async (req, res) => {
 
 
 //Route for when the users book a listing it sends a message to the host//
-router.post("/send-email", async (req, res) => {
-  try {
-      const { email,subject, message } = req.body.host;
-      const transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-          user: "hostarefugeeironhack@gmail.com",
-          pass: "FTDxtQUom4&%$2kmF95q0U^rMckmpd",
-        },
-      });
+// router.post("/send-email", async (req, res) => {
+//   try {
+//       const { email,subject, message } = req.body.host;
+//       const transporter = nodemailer.createTransport({
+//         service: "Gmail",
+//         auth: {
+//           user: "hostarefugeeironhack@gmail.com",
+//           pass: "FTDxtQUom4&%$2kmF95q0U^rMckmpd",
+//         },
+//       });
 
-      transporter.sendMail({
-        from: `"Host a Refugee" <hostarefugeeironhack@gmail.com>`,
-        to:  email,
-        subject: subject,
-        text: message,
-        html: `<b>${message}</b>`,
-      });
-      res.status(200).json({ message: "Email sent" });
-    } catch (error) {
-      res.status(404).json({ message: "No email sent" });
-    }
-  });
+//       transporter.sendMail({
+//         from: `"Host a Refugee" <hostarefugeeironhack@gmail.com>`,
+//         to:  email,
+//         subject: subject,
+//         text: message,
+//         html: `<b>${message}</b>`,
+//       });
+//       res.status(200).json({ message: "Email sent" });
+//     } catch (error) {
+//       res.status(404).json({ message: "No email sent" });
+//     }
+//   });
 
 
 
