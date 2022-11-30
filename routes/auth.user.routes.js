@@ -180,7 +180,7 @@ router.post("/listings/:id", async (req, res) => {
 //Route for when the users book a listing it sends a message to the host//
 router.post("/send-email", async (req, res) => {
   try {
-      const { email,subject, message } = req.body;
+      const { email,subject, message } = req.body.host;
       const transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
