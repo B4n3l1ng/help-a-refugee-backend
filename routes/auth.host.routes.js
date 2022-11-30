@@ -120,16 +120,6 @@ router.get("/listings", isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.get("/listings/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const listing = await Housing.findById(id);
-    res.json(listing);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
 router.post(
   "/listings",
   isAuthenticated,
@@ -196,84 +186,6 @@ router.delete("/listings/:id", async (req, res, next) => {
     const { id } = req.params;
     await Housing.findByIdAndDelete(id);
     res.json({ message: "Listing deleted" });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-//Route for the host to see and receive the messages from the users and to be able to reply to them
-router.get("/messages", async (req, res, next) => {
-  try {
-    const messages = await Message.find({ owner: authToken.user._id });
-    res.status(201).json(messages);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-router.get("/messages/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const message = await Message.findById(id)
-      .populate("owner")
-      .populate("user");
-    res.json(message);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-router.post("/messages", async (req, res, next) => {
-  try {
-    const { message, sender, receiver } = req.body;
-    const newMessage = await Message.create({
-      message,
-      sender,
-      receiver,
-      owner: authToken.user._id,
-    });
-    res.json(newMessage);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-router.put("/messages/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { message, sender, receiver } = req.body;
-    const updatedMessage = await Message.findByIdAndUpdate(
-      id,
-      {
-        message,
-        sender,
-        receiver,
-      },
-      { new: true }
-    );
-    res.json(updatedMessage);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-//Route for the host to be able to see the users profile who is messaging them
-router.get("/users/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const user = await User.findById(id).populate("user");
-    res.json(user);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-//Route for the host to be able to delete the messages
-router.delete("/messages/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    await Message.findByIdAndDelete(id);
-    res.json({ message: "Message deleted" });
   } catch (error) {
     console.log(error);
   }

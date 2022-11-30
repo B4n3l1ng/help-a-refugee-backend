@@ -144,7 +144,6 @@ router.put("/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.body.userId;
-    console.log("USER ID", userId);
     const listing = await Housing.findByIdAndUpdate(
       id,
       { usedBy: userId },
