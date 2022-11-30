@@ -26,7 +26,7 @@ router.post("/signup", uploader.single("imageUrl"), async (req, res) => {
       aboutMe,
       image,
     });
-    res.status(201).json({ message: "User created" });
+    res.status(200).json({ message: "User created" });
   } catch (error) {
     console.log(error);
     if (error.code === 11000) {
