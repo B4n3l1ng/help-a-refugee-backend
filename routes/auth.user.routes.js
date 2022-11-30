@@ -175,44 +175,35 @@ router.post("/listings/:id", async (req, res) => {
   }
 });
 
-//Route for the users to be able to see the messages they have received from the hosts//
-router.get("/messages", async (req, res) => {
-  try {
-    const messages = await Message.find();
-    res.json(messages);
-  } catch (error) {
-    res.status(404).json({ message: "No messages found" });
-  }
-});
 
-//Route for users to be able to read messages individually and delete them//
-router.get("/messages/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const messageDetails = await Message.findById(id).populate("host");
-    res.json(messageDetails);
-  } catch (error) {
-    res.status(404).json({ message: "No message with this id" });
-  }
-});
 
-router.delete("/messages/:id", async (req, res, next) => {
-  const { id } = req.params;
-  const messageDetails = await Message.findByIdAndDelete(id).populate("host");
-  res.json(messageDetails);
-});
-
-//Route for the users to be able to reply to the messages they have received from the hosts//
-router.post("/messages/:id", async (req, res) => {
+//Route for when the users book a listing it sends a message to the host//
+router.post("/send-email", async (req, res) => {
   try {
-    const { id } = req.params;
-    const { message } = req.body;
-    const messageDetails = await Message.findById(id).populate("host");
-    res.json(messageDetails);
-  } catch (error) {
-    res.status(404).json({ message: "No message with this id" });
-  }
-});
+      const { email,subject, message } = req.body;
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: "hostarefugeeironhack@gmail.com",
+          pass: "FTDxtQUom4&%$2kmF95q0U^rMckmpd",
+        },
+      });
+
+      transporter.sendMail({
+        from: `"Host a Refugee" <hostarefugeeironhack@gmail.com>`,
+        to:  email,
+        subject: subject,
+        text: message,
+        html: `<b>${message}</b>`,
+      });
+      res.status(200).json({ message: "Email sent" });
+    } catch (error) {
+      res.status(404).json({ message: "No email sent" });
+    }
+  });
+
+
+
 
 //Route for the users to be able to book a listing//
 router.post("/listings/:id", async (req, res) => {
