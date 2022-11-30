@@ -140,6 +140,22 @@ router.get("/listings", uploader.single("imageUrl"), async (req, res) => {
     res.status(404).json({ message: "No listings found" });
   }
 });
+router.put("/listings/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.body.userId;
+    console.log("USER ID", userId);
+    const listing = await Housing.findByIdAndUpdate(
+      id,
+      { usedBy: userId },
+      { new: true }
+    );
+    console.log("new housing", listing);
+    res.status(200);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 //Route for the users to be able to see the listing details including a link to the host profile//
 router.get("/user/listings/:id", async (req, res) => {
