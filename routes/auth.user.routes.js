@@ -150,7 +150,7 @@ router.put("/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.body.userId;
-  
+
     const user = await User.findById(userId);
     const fullName = user.firstName + " " + user.lastName;
     const userEmail = user.email;
@@ -167,16 +167,15 @@ router.put("/listings/:id", async (req, res) => {
     const listingCity = listing.city;
 
     const ownerId = listing.owner._id;
-  
+
     const host = await Host.findById(ownerId);
     console.log("HOST", host);
 
     const hostEmail = host.email;
     const hostName = host.firstName + " " + host.lastName;
 
-    // const { email,subject, message } = req.body.host;
     const transporter = nodemailer.createTransport({
-      service: "gmail" ,
+      service: "gmail",
       port: 465,
       secure: true,
       auth: {
@@ -187,7 +186,7 @@ router.put("/listings/:id", async (req, res) => {
 
     let details = {
       from: "hostarefugeeironhack@gmail.com",
-      to:  `${hostEmail}`,
+      to: `${hostEmail}`,
       subject: "You have a new booking",
       text: "",
       html: `
@@ -213,7 +212,7 @@ router.put("/listings/:id", async (req, res) => {
       }
     });
 
-    res.status(200);
+    res.status(200).json({ message: "success" });
   } catch (error) {
     console.log(error);
   }
@@ -253,8 +252,6 @@ router.post("/listings/:id", async (req, res) => {
   }
 });
 
-
-
 //Route for when the users book a listing it sends a message to the host//
 // router.post("/send-email", async (req, res) => {
 //   try {
@@ -279,9 +276,6 @@ router.post("/listings/:id", async (req, res) => {
 //       res.status(404).json({ message: "No email sent" });
 //     }
 //   });
-
-
-
 
 //Route for the users to be able to book a listing//
 router.post("/listings/:id", async (req, res) => {
