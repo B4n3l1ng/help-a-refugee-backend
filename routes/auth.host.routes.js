@@ -11,22 +11,29 @@ router.post("/signup", uploader.single("imageUrl"), async (req, res) => {
   try {
     const { email, password, firstName, lastName, country, city, aboutMe } =
       req.body;
-    const image = req.file.path;
-    const salt = genSaltSync(10);
-    const hashedPassword = hashSync(password, salt);
-    await Host.create({
-      email,
-      hashedPassword,
-      firstName,
-      lastName,
-      country,
-      city,
-      image,
-      aboutMe,
-    });
-    res.status(201).json({ message: "Host created" });
+    const verify = await Host.findOne({ email });
+    if (verify) {
+      res.status(405).json({ message: "That email is already in use!" });
+    } else {
+      const image = req.file.path;
+      const salt = genSaltSync(10);
+      const hashedPassword = hashSync(password, salt);
+      await Host.create({
+        email,
+        hashedPassword,
+        firstName,
+        lastName,
+        country,
+        city,
+        image,
+        aboutMe,
+      });
+      res.status(201).json({ message: "Host created" });
+    }
   } catch (error) {
-    console.log(error);
+    if (error.code === 11000) {
+      res.status.json({ message });
+    }
   }
 });
 
@@ -51,10 +58,10 @@ router.post("/login", async (req, res) => {
         );
         res.status(200).json({ status: 200, token: authToken });
       } else {
-        res.status(400).json({ message: "Wrong password" });
+        res.status(400).json({ message: "Wrong password!" });
       }
     } else {
-      res.status(404).json({ message: "No user with this username" });
+      res.status(404).json({ message: "No user with this email!" });
     }
   } catch (error) {
     console.log(error);
