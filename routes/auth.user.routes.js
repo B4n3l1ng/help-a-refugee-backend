@@ -191,7 +191,7 @@ router.put("/listings/:id", async (req, res) => {
       <h2 style= "font-color: black" "font-family: Roboto Mono">Your property has been book by: ${fullName} </h2>
       <h3 style= "font-color: black" "font-family: Roboto Mono" >Thank you so much for making it possible to help one family at a time. <br> Your property has been booked and now you are ready to host a family and help them start a new future and a better life.</h3>
       <h3 style= "font-color: black" "font-family: Roboto Mono" > Sincerely, <br> The Host a Refugee Team</h3>
-      <img src="https://res.cloudinary.com/dzikdekuj/image/upload/v1669890420/Logo_wnrune.png" alt="logo" style="width: 100px; height: 60px; margin: 20px">
+      <img src="https://res.cloudinary.com/dzikdekuj/image/upload/v1669890420/Logo_wnrune.png" alt="logo" style="width: 120px; height: 60px; margin: 20px">
       </div>`,
     };
 
