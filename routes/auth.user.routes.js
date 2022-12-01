@@ -157,6 +157,9 @@ router.put("/listings/:id", async (req, res) => {
     );
     console.log("new housing", listing);
 
+    const listingCountry = listing.country;
+    const listingCity = listing.city;
+
     const ownerId = listing.owner._id;
   
     const host = await Host.findById(ownerId);
@@ -188,7 +191,7 @@ router.put("/listings/:id", async (req, res) => {
       <img src="https://res.cloudinary.com/dzikdekuj/image/upload/v1669890420/PeopleImg_ckwwxw.png" alt="logo" style="width: 600px; height: 400px;  margin: 20px">
       
       <h1 style= "font-color: black" "font-family: Roboto Mono" >Welcome ${hostName}!</h1>
-      <h2 style= "font-color: black" "font-family: Roboto Mono">Your property has been book by: ${fullName} </h2>
+      <h2 style= "font-color: black" "font-family: Roboto Mono">Your property in ${listingCity},${listingCountry}  has been booked by: ${fullName} </h2>
       <h3 style= "font-color: black" "font-family: Roboto Mono" >Thank you so much for making it possible to help one family at a time. <br> Your property has been booked and now you are ready to host a family and help them start a new future and a better life.</h3>
       <h3 style= "font-color: black" "font-family: Roboto Mono" > Sincerely, <br> The Host a Refugee Team</h3>
       <img src="https://res.cloudinary.com/dzikdekuj/image/upload/v1669890420/Logo_wnrune.png" alt="logo" style="width: 120px; height: 60px; margin: 20px">
