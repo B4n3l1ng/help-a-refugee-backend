@@ -15,18 +15,23 @@ router.post("/signup", uploader.single("imageUrl"), async (req, res) => {
   try {
     console.log("hello", req.body);
     const { email, password, firstName, lastName, aboutMe } = req.body;
-    const image = req.file.path;
-    const salt = genSaltSync(10);
-    const hashedPassword = hashSync(password, salt);
-    await User.create({
-      email,
-      hashedPassword,
-      firstName,
-      lastName,
-      aboutMe,
-      image,
-    });
-    res.status(201).json({ message: "User created" });
+    const verify = await User.findOne({ email });
+    if (verify) {
+      res.status(405).json({ message: "That email is already in use!" });
+    } else {
+      const image = req.file.path;
+      const salt = genSaltSync(10);
+      const hashedPassword = hashSync(password, salt);
+      await User.create({
+        email,
+        hashedPassword,
+        firstName,
+        lastName,
+        aboutMe,
+        image,
+      });
+      res.status(201).json({ message: "User created" });
+    }
   } catch (error) {
     console.log(error);
     if (error.code === 11000) {
@@ -59,7 +64,7 @@ router.post("/login", async (req, res) => {
         res.status(400).json({ message: "Wrong password" });
       }
     } else {
-      res.status(404).json({ message: "No user with this username" });
+      res.status(404).json({ message: "No user with this email" });
     }
   } catch (error) {
     console.log(error);
