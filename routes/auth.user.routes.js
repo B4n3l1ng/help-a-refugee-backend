@@ -6,6 +6,7 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const Host = require("../models/Host.model");
 const Housing = require("../models/Housing.model");
 const uploader = require("../middlewares/cloudinary.config");
+const nodemailer = require("nodemailer");
 
 router.post("/upload", uploader.single("imageUrl"), (req, res, next) => {
   console.log("file is:", req.file.path);
@@ -26,7 +27,7 @@ router.post("/signup", uploader.single("imageUrl"), async (req, res) => {
       aboutMe,
       image,
     });
-    res.status(200).json({ message: "User created" });
+    res.status(201).json({ message: "User created" });
   } catch (error) {
     console.log(error);
     if (error.code === 11000) {
@@ -144,12 +145,64 @@ router.put("/listings/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.body.userId;
+  
+    const user = await User.findById(userId);
+    const fullName = user.firstName + " " + user.lastName;
+
+    console.log("USER ID", userId);
     const listing = await Housing.findByIdAndUpdate(
       id,
       { usedBy: userId },
       { new: true }
     );
     console.log("new housing", listing);
+
+    const ownerId = listing.owner._id;
+  
+    const host = await Host.findById(ownerId);
+    console.log("HOST", host);
+
+    const hostEmail = host.email;
+    const hostName = host.firstName + " " + host.lastName;
+
+    // const { email,subject, message } = req.body.host;
+    const transporter = nodemailer.createTransport({
+      service: "gmail" ,
+      port: 465,
+      secure: true,
+      auth: {
+        user: "hostarefugeeironhack@gmail.com",
+        pass: "kbhfbmuiuynwjfuy",
+      },
+    });
+
+    let details = {
+      from: "hostarefugeeironhack@gmail.com",
+      to:  `${hostEmail}`,
+      subject: "You have a new booking",
+      text: "",
+      html: `
+      <div style= "background-color: #b1b2ff; text-align: center; padding: 20px;">
+      <img src="https://res.cloudinary.com/dzikdekuj/image/upload/v1669890420/Logo_wnrune.png" alt="logo" style="width: 15vw; height: 100px; margin: 20px">
+      <br>
+      <img src="https://res.cloudinary.com/dzikdekuj/image/upload/v1669890420/PeopleImg_ckwwxw.png" alt="logo" style="width: 600px; height: 400px;  margin: 20px">
+      
+      <h1 style= "font-color: black" "font-family: Roboto Mono" >Welcome ${hostName}!</h1>
+      <h2 style= "font-color: black" "font-family: Roboto Mono">Your property has been book by: ${fullName} </h2>
+      <h3 style= "font-color: black" "font-family: Roboto Mono" >Thank you so much for making it possible to help one family at a time. <br> Your property has been booked and now you are ready to host a family and help them start a new future and a better life.</h3>
+      <h3 style= "font-color: black" "font-family: Roboto Mono" > Sincerely, <br> The Host a Refugee Team</h3>
+      <img src="https://res.cloudinary.com/dzikdekuj/image/upload/v1669890420/Logo_wnrune.png" alt="logo" style="width: 100px; height: 60px; margin: 20px">
+      </div>`,
+    };
+
+    transporter.sendMail(details, (err) => {
+      if (err) {
+        console.log("There was an error", err);
+      } else {
+        console.log("Email has been sent");
+      }
+    });
+
     res.status(200);
   } catch (error) {
     console.log(error);
@@ -190,44 +243,35 @@ router.post("/listings/:id", async (req, res) => {
   }
 });
 
-//Route for the users to be able to see the messages they have received from the hosts//
-router.get("/messages", async (req, res) => {
-  try {
-    const messages = await Message.find();
-    res.json(messages);
-  } catch (error) {
-    res.status(404).json({ message: "No messages found" });
-  }
-});
 
-//Route for users to be able to read messages individually and delete them//
-router.get("/messages/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const messageDetails = await Message.findById(id).populate("host");
-    res.json(messageDetails);
-  } catch (error) {
-    res.status(404).json({ message: "No message with this id" });
-  }
-});
 
-router.delete("/messages/:id", async (req, res, next) => {
-  const { id } = req.params;
-  const messageDetails = await Message.findByIdAndDelete(id).populate("host");
-  res.json(messageDetails);
-});
+//Route for when the users book a listing it sends a message to the host//
+// router.post("/send-email", async (req, res) => {
+//   try {
+//       const { email,subject, message } = req.body.host;
+//       const transporter = nodemailer.createTransport({
+//         service: "Gmail",
+//         auth: {
+//           user: "hostarefugeeironhack@gmail.com",
+//           pass: "FTDxtQUom4&%$2kmF95q0U^rMckmpd",
+//         },
+//       });
 
-//Route for the users to be able to reply to the messages they have received from the hosts//
-router.post("/messages/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { message } = req.body;
-    const messageDetails = await Message.findById(id).populate("host");
-    res.json(messageDetails);
-  } catch (error) {
-    res.status(404).json({ message: "No message with this id" });
-  }
-});
+//       transporter.sendMail({
+//         from: `"Host a Refugee" <hostarefugeeironhack@gmail.com>`,
+//         to:  email,
+//         subject: subject,
+//         text: message,
+//         html: `<b>${message}</b>`,
+//       });
+//       res.status(200).json({ message: "Email sent" });
+//     } catch (error) {
+//       res.status(404).json({ message: "No email sent" });
+//     }
+//   });
+
+
+
 
 //Route for the users to be able to book a listing//
 router.post("/listings/:id", async (req, res) => {
